@@ -1,8 +1,13 @@
 const API_URL = 'http://localhost:3000';
 
-export const fetchAdvertisements = async (limit = 10, start = 0) => {
+export const fetchAdvertisements = async (
+  limit = 10,
+  start = 0,
+  searchQuery = '',
+  filter = ''
+) => {
   const response = await fetch(
-    `${API_URL}/advertisements?_start=${start}&_limit=${limit}`
+    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`
   );
   return await response.json();
 };
@@ -12,7 +17,10 @@ export const fetchOrders = async () => {
   return await response.json();
 };
 
-export const updateAdvertisement = async (id: string, advert: Advertisment) => {
+export const updateAdvertisement = async (
+  id: string,
+  advert: Partial<Advertisment>
+) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
     method: 'PUT',
     headers: {

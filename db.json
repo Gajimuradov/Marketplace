@@ -68,20 +68,11 @@
       "imageUrl": ""
     },
     {
-      "id": "be2b",
-      "name": "test",
-      "price": 12,
-      "imageUrl": "1",
-      "createdAt": "2024-09-08T01:08:47.563Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "1009",
-      "name": "test",
-      "price": null,
-      "imageUrl": "1",
-      "createdAt": "2024-09-08T01:09:02.924Z",
+      "id": "7ef4",
+      "name": "wqe",
+      "price": 21,
+      "imageUrl": "https://yandex.ru/images/search?img_url=https%3A%2F%2Fwww.tapeciarnia.pl%2Ftapety%2Fnormalne%2F253304_gory_jezioro_swierki_swiatlo_cien_odbicie.jpg&lr=10720&pos=0&rpt=simage&source=serp&text=image",
+      "createdAt": "2024-09-08T01:24:37.645Z",
       "views": 0,
       "likes": 0
     }

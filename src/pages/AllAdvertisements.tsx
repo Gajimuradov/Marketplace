@@ -1,34 +1,39 @@
-import { useEffect, useState } from 'react';
-import { Button, Grid, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
+import {
+  Button,
+  Grid,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import { fetchAdvertisements } from '../api/api';
 import AdvertisementCard from '../components/AdvertisementCard';
-import AddAdvertisementModal from '../components/AddAdvertisementModal'; // Модальное окно для добавления объявления
+import AddAdvertisementModal from '../components/AddAdvertisementModal';
 import { Advertisment } from '../types';
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // Поле для хранения поискового запроса
+  const [filter, setFilter] = useState(''); // Поле для фильтрации объявлений
 
-  // Функция для обновления списка объявлений
+  // Функция для загрузки списка объявлений с поисковым запросом и фильтрацией
   const loadAdvertisements = async () => {
-    const data = await fetchAdvertisements();
+    const data = await fetchAdvertisements(10, 0, searchQuery, filter);
     setAdvertisements(data);
   };
 
   useEffect(() => {
-    loadAdvertisements(); // Загружаем объявления при загрузке страницы
-  }, []);
+    loadAdvertisements(); // Загружаем объявления при изменении поискового запроса или фильтра
+  }, [searchQuery, filter]);
 
-  // Открытие и закрытие модального окна
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     loadAdvertisements(); // Обновляем список после добавления объявления
-  };
-
-  // Удаление объявления
-  const handleDelete = () => {
-    loadAdvertisements(); // Обновляем список после удаления объявления
   };
 
   return (
@@ -37,19 +42,38 @@ const AllAdvertisements = () => {
         All Advertisements
       </Typography>
 
-      {/* Кнопка для открытия модального окна */}
+      {/* Поле для поиска по названию */}
+      <TextField
+        label="Search by name"
+        fullWidth
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        sx={{ marginBottom: 2 }}
+      />
+
+      {/* Выпадающий список для фильтрации */}
+      <FormControl fullWidth sx={{ marginBottom: 2 }}>
+        <InputLabel>Filter by</InputLabel>
+        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <MenuItem value="">None</MenuItem>
+          <MenuItem value="price">Price</MenuItem>
+          <MenuItem value="views">Views</MenuItem>
+          <MenuItem value="likes">Likes</MenuItem>
+        </Select>
+      </FormControl>
+
       <Button variant="contained" onClick={handleOpen} sx={{ marginBottom: 2 }}>
         Add Advertisement
       </Button>
 
-      {/* Модальное окно для добавления объявления */}
+      {/* Модальное окно для добавления нового объявления */}
       <AddAdvertisementModal open={open} handleClose={handleClose} />
 
       {/* Отображение всех объявлений в виде карточек */}
       <Grid container spacing={2}>
         {advertisements.map((ad) => (
           <Grid item key={ad.id} xs={12} sm={6} md={4}>
-            <AdvertisementCard ad={ad} onDelete={handleDelete} />
+            <AdvertisementCard ad={ad} onDelete={loadAdvertisements} />
           </Grid>
         ))}
       </Grid>

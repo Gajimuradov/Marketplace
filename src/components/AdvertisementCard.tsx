@@ -1,58 +1,50 @@
 import { Card, CardContent, Typography, Button } from '@mui/material';
-import { Advertisment } from '../types'; // Импорт типа объявления
-import { deleteAdvertisement } from '../api/api'; // Функция для удаления объявления
-import { useNavigate } from 'react-router-dom'; // Для навигации при редактировании
+import { Link } from 'react-router-dom';
+import { Advertisment } from '../types';
+import { deleteAdvertisement } from '../api/api'; // Импорт функции для удаления объявления
 
-type AdvertisementCardProps = {
+interface AdvertisementCardProps {
   ad: Advertisment;
-  onDelete: () => void; // Функция, которая вызывается при удалении объявления для обновления списка
-};
+  onDelete: () => void;
+}
 
 const AdvertisementCard = ({ ad, onDelete }: AdvertisementCardProps) => {
-  const navigate = useNavigate();
-
   // Обработчик удаления объявления
   const handleDelete = async () => {
     try {
-      await deleteAdvertisement(ad.id); // Вызов функции API для удаления
-      onDelete(); // Обновление списка объявлений после удаления
+      await deleteAdvertisement(ad.id); // Удаляем объявление через API
+      onDelete(); // Обновляем список объявлений после удаления
     } catch (error) {
       console.error('Failed to delete advertisement:', error);
     }
   };
 
-  // Обработчик перехода на страницу редактирования
-  const handleEdit = () => {
-    navigate(`/advertisements/${ad.id}/edit`); // Переход на страницу редактирования
-  };
-
   return (
     <Card sx={{ marginBottom: 2 }}>
       <CardContent>
-        <Typography variant="h5">{ad.name}</Typography>
-        <Typography>Price: {ad.price}</Typography>
-        <Typography>Views: {ad.views}</Typography>
-        <Typography>Likes: {ad.likes}</Typography>
-        {ad.imageUrl && (
-          <img
-            src={ad.imageUrl}
-            alt={ad.name}
-            style={{
-              width: '100%',
-              maxHeight: '200px',
-              objectFit: 'cover',
-              marginTop: '10px',
-            }}
-          />
-        )}
-        <Button onClick={handleEdit} variant="contained" sx={{ mt: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          {ad.name}
+        </Typography>
+        <Typography variant="body1">Price: {ad.price}</Typography>
+        <Typography variant="body2">Views: {ad.views}</Typography>
+        <Typography variant="body2">Likes: {ad.likes}</Typography>
+
+        {/* Кнопка для перехода на страницу редактирования */}
+        <Button
+          component={Link}
+          to={`/advertisements/edit/${ad.id}`}
+          variant="contained"
+          sx={{ mt: 1 }}
+        >
           Edit
         </Button>
+
+        {/* Кнопка для удаления объявления */}
         <Button
           onClick={handleDelete}
           variant="contained"
           color="error"
-          sx={{ mt: 2, ml: 2 }}
+          sx={{ mt: 1, ml: 2 }}
         >
           Delete
         </Button>

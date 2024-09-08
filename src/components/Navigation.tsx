@@ -9,10 +9,10 @@ const Navigation = () => {
           Seller Dashboard
         </Typography>
         <Button color="inherit" component={Link} to="/advertisements">
-          Advertisements
+          Объявления
         </Button>
         <Button color="inherit" component={Link} to="/orders">
-          Orders
+          Заказы
         </Button>
       </Toolbar>
     </AppBar>
