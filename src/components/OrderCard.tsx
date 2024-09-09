@@ -16,12 +16,21 @@ const OrderCard = ({ order }: OrderCardProps) => {
     navigate(`/advertisements/${itemId}`); // Переход на страницу объявления по его ID
   };
 
+  // Рассчитываем общую сумму заказа
+  const calculateTotalAmount = () => {
+    return order.items.reduce(
+      (total, item) => total + item.price * item.count,
+      0
+    );
+  };
+
   return (
     <Card sx={{ marginBottom: 2 }}>
       <CardContent>
         <Typography variant="h6">Заказ №{order.id}</Typography>
         <Typography>Товары: {order.items.length}</Typography>
-        <Typography>Сумма: {order.totalAmount} ₽</Typography>
+        <Typography>Сумма: {calculateTotalAmount()} ₽</Typography>{' '}
+        {/* Используем функцию для расчёта суммы */}
         <Typography>
           Дата: {new Date(order.createdAt).toLocaleDateString()}
         </Typography>
@@ -35,7 +44,6 @@ const OrderCard = ({ order }: OrderCardProps) => {
         >
           {showItems ? 'Скрыть товары' : 'Показать товары'}
         </Button>
-
         {/* Список товаров */}
         {showItems && (
           <Box sx={{ marginTop: 2 }}>
@@ -45,8 +53,12 @@ const OrderCard = ({ order }: OrderCardProps) => {
                 sx={{ cursor: 'pointer', marginBottom: 1 }}
                 onClick={() => handleItemClick(item.id)}
               >
+                {/* Ограничиваем длину названия товара до 20 символов */}
                 <Typography sx={{ color: 'blue' }} variant="body1">
-                  {item.name} - {item.price} ₽ x {item.count}
+                  {item.name.length > 20
+                    ? `${item.name.slice(0, 20)}...`
+                    : item.name}{' '}
+                  - {item.price} ₽ x {item.count}
                 </Typography>
               </Box>
             ))}
