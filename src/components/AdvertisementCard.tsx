@@ -1,52 +1,40 @@
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  Button,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Advertisment } from '../types';
-import { deleteAdvertisement } from '../api/api'; // Импорт функции для удаления объявления
 
 interface AdvertisementCardProps {
   ad: Advertisment;
-  onDelete: () => void;
 }
 
-const AdvertisementCard = ({ ad, onDelete }: AdvertisementCardProps) => {
-  // Обработчик удаления объявления
-  const handleDelete = async () => {
-    try {
-      await deleteAdvertisement(ad.id); // Удаляем объявление через API
-      onDelete(); // Обновляем список объявлений после удаления
-    } catch (error) {
-      console.error('Failed to delete advertisement:', error);
-    }
-  };
-
+const AdvertisementCard = ({ ad }: AdvertisementCardProps) => {
   return (
     <Card sx={{ marginBottom: 2 }}>
+      {/* Отображение изображения */}
+      <CardMedia
+        component="img"
+        height="140"
+        image={ad.imageUrl} // Используем поле imageUrl для загрузки изображения
+        alt={ad.name}
+      />
       <CardContent>
         <Typography variant="h5" gutterBottom>
           {ad.name}
         </Typography>
-        <Typography variant="body1">Price: {ad.price}</Typography>
-        <Typography variant="body2">Views: {ad.views}</Typography>
-        <Typography variant="body2">Likes: {ad.likes}</Typography>
-
-        {/* Кнопка для перехода на страницу редактирования */}
+        <Typography>Цена: {ad.price} ₽</Typography>
+        <Typography>Просмотры: {ad.views}</Typography>
+        <Typography>Лайки: {ad.likes}</Typography>
         <Button
           component={Link}
           to={`/advertisements/edit/${ad.id}`}
           variant="contained"
-          sx={{ mt: 1 }}
         >
-          Edit
-        </Button>
-
-        {/* Кнопка для удаления объявления */}
-        <Button
-          onClick={handleDelete}
-          variant="contained"
-          color="error"
-          sx={{ mt: 1, ml: 2 }}
-        >
-          Delete
+          Редактировать
         </Button>
       </CardContent>
     </Card>
