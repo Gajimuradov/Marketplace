@@ -1,19 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AllAdvertisements from './pages/AllAdvertisements';
 import AdvertisementDetails from './pages/AdvertisementDetails';
+import Orders from './pages/Orders';
+import Navbar from './components/Navbar'; // Убедитесь, что Navbar правильно импортирован
 
 const App = () => {
   return (
     <Router>
+      <Navbar /> {/* Убедитесь, что Navbar находится выше Routes */}
       <Routes>
-        {/* Добавляем маршрут для корневого пути */}
         <Route path="/" element={<AllAdvertisements />} />
-
-        {/* Маршрут для страницы всех объявлений */}
         <Route path="/advertisements" element={<AllAdvertisements />} />
-
-        {/* Маршрут для конкретного объявления */}
         <Route path="/advertisements/:id" element={<AdvertisementDetails />} />
+        <Route path="/orders" element={<Orders />} />{' '}
+        {/* Маршрут для заказов */}
       </Routes>
     </Router>
   );

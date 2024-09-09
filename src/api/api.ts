@@ -64,3 +64,25 @@ export const deleteAdvertisement = async (id: string) => {
 
   return await response.json();
 };
+
+// Функция для получения всех заказов с фильтрацией и сортировкой
+export const fetchOrders = async (status = '', sortBy = '') => {
+  let url = `http://localhost:3000/orders`;
+
+  // Добавляем фильтрацию по статусу
+  if (status) {
+    url += `?status=${status}`;
+  }
+
+  // Добавляем сортировку по сумме заказа
+  if (sortBy) {
+    const separator = status ? '&' : '?';  // Определяем, нужно ли добавить "&" или "?"
+    url += `${separator}_sort=totalAmount&_order=${sortBy}`;
+  }
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Ошибка при загрузке заказов');
+  }
+  return await response.json();
+};

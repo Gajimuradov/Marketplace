@@ -1,16 +1,44 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 import { Order } from '../types';
+import { useState } from 'react';
 
-const OrderCard = ({ order }: { order: Order }) => {
+interface OrderCardProps {
+  order: Order;
+}
+
+const OrderCard = ({ order }: OrderCardProps) => {
+  const [showItems, setShowItems] = useState(false); // Для показа товаров
+
   return (
-    <Card>
+    <Card sx={{ marginBottom: 2 }}>
       <CardContent>
-        <Typography variant="h5">Order #{order.id}</Typography>
-        <Typography>Total: {order.total}</Typography>
-        <Typography>Status: {order.status}</Typography>
+        <Typography variant="h6">Заказ №{order.id}</Typography>
+        <Typography>Товары: {order.items.length}</Typography>
+        <Typography>Сумма: {order.totalAmount} ₽</Typography>
         <Typography>
-          Created at: {new Date(order.createdAt).toLocaleDateString()}
+          Дата: {new Date(order.createdAt).toLocaleDateString()}
         </Typography>
+        <Typography>
+          Статус: {order.status === 'completed' ? 'Завершён' : 'В ожидании'}
+        </Typography>
+        <Button
+          variant="contained"
+          sx={{ mt: 1 }}
+          onClick={() => setShowItems(!showItems)}
+        >
+          {showItems ? 'Скрыть товары' : 'Показать товары'}
+        </Button>
+        {showItems && (
+          <ul>
+            {order.items.map((item) => (
+              <li key={item.id}>
+                <Typography>
+                  {item.name} - {item.price} ₽ x {item.count}
+                </Typography>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

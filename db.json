@@ -175,6 +175,46 @@
           "count": 5
         }
       ]
+    },
+    {
+      "id": "3",
+      "status": "pending",
+      "createdAt": "2024-08-13T15:00:00.000Z",
+      "finishedAt": "",
+      "totalAmount": 60000,
+      "deliveryWay": "mail",
+      "items": [
+        {
+          "id": "1",
+          "name": "Стул старинный",
+          "price": 2000,
+          "createdAt": "2022-08-12T20:16:55.351Z",
+          "views": 20,
+          "likes": 2,
+          "imageUrl": "https://example.com/antique-chair.jpg",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "status": "completed",
+      "createdAt": "2024-08-14T10:00:00.000Z",
+      "finishedAt": "2024-08-14T12:00:00.000Z",
+      "totalAmount": 100000,
+      "deliveryWay": "sdek",
+      "items": [
+        {
+          "id": "3",
+          "name": "Ковер",
+          "price": 5000,
+          "createdAt": "2024-07-12T20:16:55.351Z",
+          "views": 2000000,
+          "likes": 2,
+          "imageUrl": "https://example.com/carpet.jpg",
+          "count": 20
+        }
+      ]
     }
   ]
 }
