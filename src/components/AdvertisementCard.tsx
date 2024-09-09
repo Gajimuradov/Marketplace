@@ -1,5 +1,5 @@
 import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // Импорт useNavigate для перехода
+import { useNavigate } from 'react-router-dom';
 import { Advertisment } from '../types';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -16,14 +16,28 @@ const AdvertisementCard = ({ ad }: AdvertisementCardProps) => {
   };
 
   return (
-    <Card sx={{ marginBottom: 2, cursor: 'pointer' }} onClick={handleCardClick}>
-      {' '}
-      {/* Добавляем кликабельность */}
+    <Card
+      sx={{
+        marginBottom: 2,
+        cursor: 'pointer',
+        width: '100%', // Ширина карточки 100%
+        height: '100%', // Высота карточки 100%
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between', // Распределение контента
+      }}
+      onClick={handleCardClick}
+    >
       <CardMedia
         component="img"
-        height="140"
         image={ad.imageUrl}
         alt={ad.name}
+        sx={{
+          width: '100%',
+          height: '0',
+          paddingTop: '100%', // Соотношение сторон 1:1, чтобы сделать карточку квадратной
+          objectFit: 'cover',
+        }}
       />
       <CardContent>
         <Typography variant="h5" gutterBottom>

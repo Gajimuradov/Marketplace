@@ -6,6 +6,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Добавляем маршрут для корневого пути */}
+        <Route path="/" element={<AllAdvertisements />} />
+
         {/* Маршрут для страницы всех объявлений */}
         <Route path="/advertisements" element={<AllAdvertisements />} />
 

@@ -1,42 +1,25 @@
-const API_URL = 'http://localhost:3000';
+// api.ts
 
-export const fetchAdvertisements = async (
-  limit = 10,
-  start = 0,
-  searchQuery = '',
-  filter = ''
-) => {
-  const response = await fetch(
-    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`
-  );
-  return await response.json();
-};
-
-export const fetchOrders = async () => {
-  const response = await fetch(`${API_URL}/orders`);
-  return await response.json();
-};
-
-export const updateAdvertisement = async (
-  id: string,
-  advert: Partial<Advertisment>
-) => {
-  const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(advert),
-  });
-
+// Функция для получения всех объявлений
+export const fetchAdvertisements = async (limit = 10, start = 0, searchQuery = '', filter = '') => {
+  const response = await fetch(`http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`);
   if (!response.ok) {
-    throw new Error('Failed to update advertisement');
+    throw new Error('Ошибка при загрузке объявлений');
   }
-
   return await response.json();
 };
 
-export const createAdvertisement = async (advert: Advertisment) => {
+// Функция для получения конкретного объявления по ID
+export const fetchAdvertisement = async (id: string) => {
+  const response = await fetch(`http://localhost:3000/advertisements/${id}`);
+  if (!response.ok) {
+    throw new Error('Ошибка при загрузке объявления');
+  }
+  return await response.json();
+};
+
+// Функция для создания нового объявления
+export const createAdvertisement = async (advert: Partial<Advertisment>) => {
   const response = await fetch('http://localhost:3000/advertisements', {
     method: 'POST',
     headers: {
@@ -46,18 +29,38 @@ export const createAdvertisement = async (advert: Advertisment) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to create advertisement');
+    throw new Error('Ошибка при создании объявления');
   }
 
   return await response.json();
 };
 
+// Функция для обновления объявления
+export const updateAdvertisement = async (id: string, advert: Partial<Advertisment>) => {
+  const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(advert),
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при обновлении объявления');
+  }
+
+  return await response.json();
+};
+
+// Функция для удаления объявления
 export const deleteAdvertisement = async (id: string) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
     method: 'DELETE',
   });
 
   if (!response.ok) {
-    throw new Error('Failed to delete advertisement');
+    throw new Error('Ошибка при удалении объявления');
   }
+
+  return await response.json();
 };
