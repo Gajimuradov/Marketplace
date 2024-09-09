@@ -3,13 +3,30 @@ import { Advertisment } from '../types';
 
 // Функция для получения всех объявлений
 
-export const fetchAdvertisements = async (limit = 10, start = 0, searchQuery = '', filter = '') => {
-  const response = await fetch(`http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`);
+export const fetchAdvertisements = async (
+  limit = 10,
+  start = 0,
+  searchQuery = '',
+  filter = ''
+) => {
+  // Логируем запрос для проверки
+  console.log(
+    'Запрос к API:',
+    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`
+  );
+
+  const searchParam = searchQuery ? `&name_like=${searchQuery}` : '';
+
+  const response = await fetch(
+    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}${searchParam}&_sort=${filter}`
+  );
   if (!response.ok) {
     throw new Error('Ошибка при загрузке объявлений');
   }
 
   const advertisements = await response.json();
+
+  console.log('Полученные объявления:', advertisements); // Логируем результаты
 
   // Получаем общее количество объявлений, без учета пагинации
   const countResponse = await fetch('http://localhost:3000/advertisements');
@@ -48,7 +65,10 @@ export const createAdvertisement = async (advert: Partial<Advertisment>) => {
 };
 
 // Функция для обновления объявления
-export const updateAdvertisement = async (id: string, advert: Partial<Advertisment>) => {
+export const updateAdvertisement = async (
+  id: string,
+  advert: Partial<Advertisment>
+) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
     method: 'PUT',
     headers: {
@@ -77,9 +97,6 @@ export const deleteAdvertisement = async (id: string) => {
   return await response.json();
 };
 
-
-
-
 // Функция для получения всех заказов с фильтрацией и сортировкой
 export const fetchOrders = async (status = '', sortBy = '') => {
   let url = `http://localhost:3000/orders`;
@@ -91,7 +108,7 @@ export const fetchOrders = async (status = '', sortBy = '') => {
 
   // Добавляем сортировку по сумме заказа
   if (sortBy) {
-    const separator = status ? '&' : '?';  // Определяем, нужно ли добавить "&" или "?"
+    const separator = status ? '&' : '?'; // Определяем, нужно ли добавить "&" или "?"
     url += `${separator}_sort=totalAmount&_order=${sortBy}`;
   }
 
@@ -100,4 +117,14 @@ export const fetchOrders = async (status = '', sortBy = '') => {
     throw new Error('Ошибка при загрузке заказов');
   }
   return await response.json();
+};
+
+export const fetchAllAdvertisements = async () => {
+  const response = await fetch(`http://localhost:3000/advertisements`);
+  if (!response.ok) {
+    throw new Error('Ошибка при загрузке объявлений');
+  }
+
+  const advertisements = await response.json();
+  return advertisements; // Возвращаем все объявления
 };

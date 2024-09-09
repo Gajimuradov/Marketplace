@@ -65,7 +65,7 @@
       "createdAt": "2024-08-12T12:16:55.351Z",
       "views": 200000,
       "likes": 302,
-      "imageUrl": "https://example.com/iphone.jpg"
+      "imageUrl": "https://avatars.mds.yandex.net/i?id=60fd49176405e842a24115aa49ce9f21_l-4552383-images-thumbs&n=13"
     },
     {
       "id": "8",
@@ -121,6 +121,16 @@
       "createdAt": "2024-09-09T13:20:31.428Z",
       "views": 0,
       "likes": 0
+    },
+    {
+      "id": "3361",
+      "name": "Бипки",
+      "price": 1,
+      "description": "йц",
+      "imageUrl": "",
+      "createdAt": "2024-09-09T14:25:17.298Z",
+      "views": 0,
+      "likes": 0
     }
   ],
   "orders": [
@@ -139,7 +149,7 @@
           "createdAt": "2024-08-12T12:16:55.351Z",
           "views": 200000,
           "likes": 302,
-          "imageUrl": "https://example.com/iphone.jpg",
+          "imageUrl": "https://sc04.alicdn.com/kf/Haffdf66022a042d3a4ac3f25a82adbccq.jpg",
           "count": 3
         },
         {
@@ -171,7 +181,7 @@
           "createdAt": "2024-08-12T20:16:55.351Z",
           "views": 77832,
           "likes": 45666,
-          "imageUrl": "https://example.com/invisible-cloak.jpg",
+          "imageUrl": "https://avatars.dzeninfra.ru/get-zen_doc/133957/pub_5b51c6564f736c00a9569d0c_5b51cea37166ec00a92ed395/scale_1200",
           "count": 10
         },
         {
@@ -181,7 +191,7 @@
           "createdAt": "2024-06-12T20:16:55.351Z",
           "views": 0,
           "likes": 0,
-          "imageUrl": "https://example.com/socks.jpg",
+          "imageUrl": "https://media.baamboozle.com/uploads/images/1882220/c7f19a90-dd49-42cd-96ff-84ce8bf3d3a1.webp",
           "count": 5
         }
       ]
@@ -201,7 +211,7 @@
           "createdAt": "2022-08-12T20:16:55.351Z",
           "views": 20,
           "likes": 2,
-          "imageUrl": "https://example.com/antique-chair.jpg",
+          "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Armchair_%28fauteuil_à_la_reine%29_MET_DP106642.jpg/1173px-Armchair_%28fauteuil_à_la_reine%29_MET_DP106642.jpg",
           "count": 10
         }
       ]
