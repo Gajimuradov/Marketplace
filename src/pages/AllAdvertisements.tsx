@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
 import {
   Grid,
   Typography,
   CircularProgress,
   TextField,
+  InputAdornment,
   Box,
 } from '@mui/material';
-import AdvertisementCard from '../components/AdvertisementCard';
-import { fetchAdvertisements } from '../api/api';
-import { Advertisment } from '../types';
+import SearchIcon from '@mui/icons-material/Search'; // Импортируем иконку лупы
 import TablePagination from '@mui/material/TablePagination';
+import AdvertisementCard from '../components/AdvertisementCard';
+import { useState, useEffect } from 'react';
+import { fetchAdvertisements } from '../api/api'; // Импорт функции API
+import { Advertisment } from '../types';
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
@@ -20,40 +22,27 @@ const AllAdvertisements = () => {
   const [page, setPage] = useState(0); // Текущая страница
   const [totalAdvertisements, setTotalAdvertisements] = useState(0); // Общее количество объявлений
 
-  // Функция для получения общего количества объявлений
-  const fetchTotalAdvertisements = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/advertisements');
-      const data = await response.json();
-      setTotalAdvertisements(data.length); // Устанавливаем общее количество объявлений
-    } catch (error) {
-      setError('Ошибка при получении общего количества объявлений');
-    }
-  };
-
-  // Загрузка объявлений с сервера
-  const loadAdvertisements = async () => {
-    setLoading(true); // Устанавливаем состояние загрузки
-    try {
-      const data = await fetchAdvertisements(
-        rowsPerPage,
-        page * rowsPerPage,
-        searchQuery,
-        ''
-      );
-      setAdvertisements(data);
-    } catch (err) {
-      setError('Ошибка при загрузке объявлений');
-    } finally {
-      setLoading(false); // Отключаем состояние загрузки
-    }
-  };
-
-  // Используем useEffect для загрузки данных при изменении пагинации или поиска
   useEffect(() => {
-    fetchTotalAdvertisements(); // Получаем общее количество объявлений
-    loadAdvertisements(); // Загружаем объявления
-  }, [rowsPerPage, page, searchQuery]); // Зависимости для перезагрузки при изменении страницы или количества строк
+    const loadAdvertisements = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchAdvertisements(
+          rowsPerPage,
+          page * rowsPerPage,
+          searchQuery,
+          ''
+        );
+        setAdvertisements(data);
+        setTotalAdvertisements(data.length);
+      } catch (err) {
+        setError('Ошибка при загрузке объявлений');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAdvertisements();
+  }, [rowsPerPage, page, searchQuery]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -63,31 +52,39 @@ const AllAdvertisements = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Возвращаемся на первую страницу при изменении количества объявлений на странице
+    setPage(0); // Сброс на первую страницу при изменении количества строк
   };
 
-  // Если данные загружаются, показываем лоадер
   if (loading) {
     return <CircularProgress />;
   }
 
-  // Если возникла ошибка, показываем сообщение об ошибке
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
 
   return (
-    <Box>
+    <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
         Все объявления
       </Typography>
+
+      {/* Поле для поиска с иконкой лупы */}
       <TextField
-        label="Поиск по названию"
+        label="Поиск объявления..."
         fullWidth
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         sx={{ marginBottom: 2 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
       />
+
       <Grid container spacing={2}>
         {advertisements.map((ad) => (
           <Grid item key={ad.id} xs={12} sm={6} md={4}>
@@ -96,16 +93,18 @@ const AllAdvertisements = () => {
         ))}
       </Grid>
 
-      {/* Пагинация */}
-      <TablePagination
-        component="div"
-        count={totalAdvertisements} // Динамическое количество объявлений
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Объявлений на странице"
-      />
+      {/* Пагинация, выровненная по центру */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <TablePagination
+          component="div"
+          count={totalAdvertisements} // Общее количество объявлений
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="Объявлений на странице"
+        />
+      </Box>
     </Box>
   );
 };

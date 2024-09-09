@@ -1,6 +1,7 @@
-import { Card, CardContent, Typography, Button } from '@mui/material';
-import { Order } from '../types';
+import { Card, CardContent, Typography, Button, Box } from '@mui/material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Order } from '../types';
 
 interface OrderCardProps {
   order: Order;
@@ -8,6 +9,12 @@ interface OrderCardProps {
 
 const OrderCard = ({ order }: OrderCardProps) => {
   const [showItems, setShowItems] = useState(false); // Для показа товаров
+  const navigate = useNavigate();
+
+  // Функция для перехода на страницу объявления
+  const handleItemClick = (itemId: string) => {
+    navigate(`/advertisements/${itemId}`); // Переход на страницу объявления по его ID
+  };
 
   return (
     <Card sx={{ marginBottom: 2 }}>
@@ -28,16 +35,22 @@ const OrderCard = ({ order }: OrderCardProps) => {
         >
           {showItems ? 'Скрыть товары' : 'Показать товары'}
         </Button>
+
+        {/* Список товаров */}
         {showItems && (
-          <ul>
+          <Box sx={{ marginTop: 2 }}>
             {order.items.map((item) => (
-              <li key={item.id}>
-                <Typography>
+              <Box
+                key={item.id}
+                sx={{ cursor: 'pointer', marginBottom: 1 }}
+                onClick={() => handleItemClick(item.id)}
+              >
+                <Typography sx={{ color: 'blue' }} variant="body1">
                   {item.name} - {item.price} ₽ x {item.count}
                 </Typography>
-              </li>
+              </Box>
             ))}
-          </ul>
+          </Box>
         )}
       </CardContent>
     </Card>
