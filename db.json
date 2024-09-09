@@ -2,7 +2,7 @@
   "advertisements": [
     {
       "id": "1",
-      "name": "Стул старинный",
+      "name": "Стул Новый",
       "description": "Очень красивый",
       "price": 2000,
       "createdAt": "2022-08-12T20:16:55.351Z",
@@ -109,6 +109,16 @@
       "price": 21,
       "imageUrl": "https://sc04.alicdn.com/kf/Haffdf66022a042d3a4ac3f25a82adbccq.jpg",
       "createdAt": "2024-09-09T10:03:22.077Z",
+      "views": 0,
+      "likes": 0
+    },
+    {
+      "id": "8d34",
+      "name": "стол старый",
+      "price": 21,
+      "description": "Да, вот такой вот стул",
+      "imageUrl": "https://images.ctfassets.net/0idwgenf7ije/25ssR4JRs7de6cRKmDd6AB/b6d30d1fd533c20fc32e3e6eeeff9efc/Gemini_Orchid_in_5_minutes-Image_2.png",
+      "createdAt": "2024-09-09T13:20:31.428Z",
       "views": 0,
       "likes": 0
     }

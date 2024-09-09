@@ -1,4 +1,5 @@
 // api.ts
+import { Advertisment } from '../types';
 
 // Функция для получения всех объявлений
 export const fetchAdvertisements = async (limit = 10, start = 0, searchQuery = '', filter = '') => {
@@ -64,6 +65,9 @@ export const deleteAdvertisement = async (id: string) => {
 
   return await response.json();
 };
+
+
+
 
 // Функция для получения всех заказов с фильтрацией и сортировкой
 export const fetchOrders = async (status = '', sortBy = '') => {
