@@ -1,21 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AllAdvertisements from './pages/AllAdvertisements';
-import Orders from './pages/Orders';
-import EditAdvertisement from './pages/EditAdvertisement'; // Импорт страницы редактирования
-import Navigation from './components/Navigation';
+import AdvertisementDetails from './pages/AdvertisementDetails';
 
 const App = () => {
   return (
     <Router>
-      <Navigation />
       <Routes>
+        {/* Маршрут для страницы всех объявлений */}
         <Route path="/advertisements" element={<AllAdvertisements />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route
-          path="/advertisements/edit/:id"
-          element={<EditAdvertisement />}
-        />{' '}
-        {/* Маршрут для редактирования */}
+
+        {/* Маршрут для конкретного объявления */}
+        <Route path="/advertisements/:id" element={<AdvertisementDetails />} />
       </Routes>
     </Router>
   );

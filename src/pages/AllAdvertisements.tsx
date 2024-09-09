@@ -1,83 +1,112 @@
 import { useState, useEffect } from 'react';
 import {
-  Button,
   Grid,
   Typography,
+  CircularProgress,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Box,
 } from '@mui/material';
-import { fetchAdvertisements } from '../api/api';
 import AdvertisementCard from '../components/AdvertisementCard';
-import AddAdvertisementModal from '../components/AddAdvertisementModal';
+import { fetchAdvertisements } from '../api/api';
 import { Advertisment } from '../types';
+import TablePagination from '@mui/material/TablePagination';
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
-  const [open, setOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // Поле для хранения поискового запроса
-  const [filter, setFilter] = useState(''); // Поле для фильтрации объявлений
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Количество объявлений на странице
+  const [page, setPage] = useState(0); // Текущая страница
+  const [totalAdvertisements, setTotalAdvertisements] = useState(0); // Общее количество объявлений
 
-  // Функция для загрузки списка объявлений с поисковым запросом и фильтрацией
+  // Функция для получения общего количества объявлений
+  const fetchTotalAdvertisements = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/advertisements');
+      const data = await response.json();
+      setTotalAdvertisements(data.length); // Устанавливаем общее количество объявлений
+    } catch (error) {
+      setError('Ошибка при получении общего количества объявлений');
+    }
+  };
+
+  // Загрузка объявлений с сервера
   const loadAdvertisements = async () => {
-    const data = await fetchAdvertisements(10, 0, searchQuery, filter);
-    setAdvertisements(data);
+    setLoading(true); // Устанавливаем состояние загрузки
+    try {
+      const data = await fetchAdvertisements(
+        rowsPerPage,
+        page * rowsPerPage,
+        searchQuery,
+        ''
+      );
+      setAdvertisements(data);
+    } catch (err) {
+      setError('Ошибка при загрузке объявлений');
+    } finally {
+      setLoading(false); // Отключаем состояние загрузки
+    }
   };
 
+  // Используем useEffect для загрузки данных при изменении пагинации или поиска
   useEffect(() => {
-    loadAdvertisements(); // Загружаем объявления при изменении поискового запроса или фильтра
-  }, [searchQuery, filter]);
+    fetchTotalAdvertisements(); // Получаем общее количество объявлений
+    loadAdvertisements(); // Загружаем объявления
+  }, [rowsPerPage, page, searchQuery]); // Зависимости для перезагрузки при изменении страницы или количества строк
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    loadAdvertisements(); // Обновляем список после добавления объявления
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
   };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Возвращаемся на первую страницу при изменении количества объявлений на странице
+  };
+
+  // Если данные загружаются, показываем лоадер
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  // Если возникла ошибка, показываем сообщение об ошибке
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
 
   return (
-    <div>
+    <Box>
       <Typography variant="h4" gutterBottom>
-        All Advertisements
+        Все объявления
       </Typography>
-
-      {/* Поле для поиска по названию */}
       <TextField
-        label="Search by name"
+        label="Поиск по названию"
         fullWidth
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         sx={{ marginBottom: 2 }}
       />
-
-      {/* Выпадающий список для фильтрации */}
-      <FormControl fullWidth sx={{ marginBottom: 2 }}>
-        <InputLabel>Filter by</InputLabel>
-        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <MenuItem value="">None</MenuItem>
-          <MenuItem value="price">Price</MenuItem>
-          <MenuItem value="views">Views</MenuItem>
-          <MenuItem value="likes">Likes</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Button variant="contained" onClick={handleOpen} sx={{ marginBottom: 2 }}>
-        Add Advertisement
-      </Button>
-
-      {/* Модальное окно для добавления нового объявления */}
-      <AddAdvertisementModal open={open} handleClose={handleClose} />
-
-      {/* Отображение всех объявлений в виде карточек */}
       <Grid container spacing={2}>
         {advertisements.map((ad) => (
           <Grid item key={ad.id} xs={12} sm={6} md={4}>
-            <AdvertisementCard ad={ad} onDelete={loadAdvertisements} />
+            <AdvertisementCard ad={ad} />
           </Grid>
         ))}
       </Grid>
-    </div>
+
+      {/* Пагинация */}
+      <TablePagination
+        component="div"
+        count={totalAdvertisements} // Динамическое количество объявлений
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Объявлений на странице"
+      />
+    </Box>
   );
 };
 
