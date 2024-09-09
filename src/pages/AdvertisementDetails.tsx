@@ -18,6 +18,7 @@ const AdvertisementDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false); // Режим редактирования
   const [editedAdvert, setEditedAdvert] = useState<Partial<Advertisment>>({}); // Для отслеживания изменений
+  const [expanded, setExpanded] = useState(false); // Состояние для отображения полного описания
 
   // Загрузка объявления
   useEffect(() => {
@@ -75,6 +76,13 @@ const AdvertisementDetails = () => {
     return <Typography>Объявление не найдено</Typography>;
   }
 
+  // Ограничение на 100 символов для краткого описания
+  const maxDescriptionLength = 100;
+  const truncatedDescription =
+    advert.description.length > maxDescriptionLength
+      ? advert.description.slice(0, maxDescriptionLength) + '...'
+      : advert.description;
+
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -87,12 +95,25 @@ const AdvertisementDetails = () => {
         sx={{ width: '100%', maxHeight: '400px', objectFit: 'cover', mb: 2 }}
       />
 
-      {/* Если не в режиме редактирования, просто показываем информацию */}
       {!isEditing ? (
         <>
           <Typography variant="h6">Название: {advert.name}</Typography>
           <Typography>Цена: {advert.price} ₽</Typography>
-          <Typography>Описание: {advert.description}</Typography>
+
+          {/* Описание с кнопкой для раскрытия */}
+          <Typography
+            variant="body1"
+            gutterBottom
+            sx={{ wordBreak: 'break-word' }} // Описание переносится на новую строку
+          >
+            {expanded ? advert.description : truncatedDescription}
+          </Typography>
+          {advert.description.length > maxDescriptionLength && (
+            <Button onClick={() => setExpanded(!expanded)}>
+              {expanded ? 'Скрыть' : 'Читать полностью'}
+            </Button>
+          )}
+
           <Typography>Просмотры: {advert.views}</Typography>
           <Typography>Лайки: {advert.likes}</Typography>
           <Button variant="contained" sx={{ mt: 2 }} onClick={handleEditClick}>

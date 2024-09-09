@@ -3,38 +3,41 @@ import {
   Grid,
   Typography,
   CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
   TextField,
   InputAdornment,
-  Box,
+  IconButton,
   Button,
+  TablePagination,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import TablePagination from '@mui/material/TablePagination';
+import SortIcon from '@mui/icons-material/Sort';
 import AdvertisementCard from '../components/AdvertisementCard';
-import AddAdvertisementModal from '../components/AddAdvertisementModal';
-import { fetchAllAdvertisements } from '../api/api';
+import { fetchAdvertisements } from '../api/api';
 import { Advertisment } from '../types';
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
-  const [filteredAdvertisements, setFilteredAdvertisements] = useState<
-    Advertisment[]
-  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const [openAddModal, setOpenAddModal] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalAdvertisements, setTotalAdvertisements] = useState(0);
 
-  // Загружаем все объявления с сервера
-  const loadAllAdvertisements = async () => {
-    console.log('Загрузка всех объявлений...');
+  // Загрузка объявлений с сервера
+  const loadAdvertisements = async () => {
     setLoading(true);
     try {
-      const advertisements = await fetchAllAdvertisements(); // Загружаем все объявления с сервера
-      setAdvertisements(advertisements); // Устанавливаем все объявления
-      setFilteredAdvertisements(advertisements); // По умолчанию показываем все
+      const data = await fetchAdvertisements(filterCategory, sortOrder);
+      setAdvertisements(data);
+      setTotalAdvertisements(data.length); // Обновляем количество объявлений для пагинации
     } catch (err) {
       setError('Ошибка при загрузке объявлений');
     } finally {
@@ -42,34 +45,17 @@ const AllAdvertisements = () => {
     }
   };
 
-  // Фильтрация объявлений на основе поискового запроса
-  const filterAdvertisements = () => {
-    if (searchQuery) {
-      const filtered = advertisements.filter((ad) =>
-        ad.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredAdvertisements(filtered);
-      setPage(0); // Сбрасываем на первую страницу после поиска
-    } else {
-      setFilteredAdvertisements(advertisements); // Если поиск пустой, показываем все объявления
-    }
-  };
-
-  // Функция для обработки поиска
-  const handleSearch = () => {
-    filterAdvertisements(); // Фильтруем объявления на основе поискового запроса
-  };
-
-  // Нажатие клавиши Enter для запуска поиска
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
   useEffect(() => {
-    loadAllAdvertisements(); // Загружаем все объявления при первом рендере
-  }, []);
+    loadAdvertisements();
+  }, [filterCategory, sortOrder, page, rowsPerPage]);
+
+  const handleSortToggle = () => {
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  };
+
+  const handleSearch = () => {
+    loadAdvertisements();
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -79,16 +65,7 @@ const AllAdvertisements = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Сброс на первую страницу при изменении количества строк
-  };
-
-  const handleOpenAddModal = () => {
-    setOpenAddModal(true);
-  };
-
-  const handleCloseAddModal = () => {
-    setOpenAddModal(false);
-    loadAllAdvertisements(); // Обновляем список объявлений после добавления нового
+    setPage(0);
   };
 
   if (loading) {
@@ -99,42 +76,42 @@ const AllAdvertisements = () => {
     return <Typography color="error">{error}</Typography>;
   }
 
-  // Определяем объявления, которые отображаются на текущей странице
-  const paginatedAdvertisements = filteredAdvertisements.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
         Все объявления
       </Typography>
 
-      {/* Кнопка для добавления нового объявления */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenAddModal}
-        sx={{ mb: 2 }}
-      >
-        Добавить объявление
-      </Button>
+      {/* Сортировка, иконка сортировки, и поле поиска */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        {/* Иконка сортировки */}
+        <IconButton onClick={handleSortToggle} sx={{ marginRight: 2 }}>
+          <SortIcon />
+        </IconButton>
 
-      {/* Модальное окно для добавления объявления */}
-      <AddAdvertisementModal
-        open={openAddModal}
-        handleClose={handleCloseAddModal}
-      />
+        {/* Сортировка по параметрам */}
+        <FormControl sx={{ marginRight: 2, minWidth: 200 }}>
+          <InputLabel>Сортировка</InputLabel>
+          <Select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+          >
+            <MenuItem value="all">Все категории</MenuItem>
+            <MenuItem value="price">По цене</MenuItem>
+            <MenuItem value="views">По просмотрам</MenuItem>
+            <MenuItem value="likes">По лайкам</MenuItem>
+          </Select>
+        </FormControl>
 
-      {/* Поле для поиска */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {/* Поле поиска */}
         <TextField
           label="Поиск объявления..."
           fullWidth
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyDown} // Обработка нажатия клавиши "Enter"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -143,29 +120,33 @@ const AllAdvertisements = () => {
             ),
           }}
         />
+
+        {/* Кнопка для поиска */}
         <Button
           variant="contained"
-          sx={{ ml: 2, height: 56 }} // Задаем ту же высоту, что и у TextField
-          onClick={handleSearch} // Кнопка для поиска
+          sx={{ marginLeft: 2, height: 56, minWidth: 120 }} // Делаем кнопку шире
+          onClick={handleSearch}
         >
           Искать
         </Button>
       </Box>
 
-      {/* Отображение объявлений */}
+      {/* Отображение всех объявлений */}
       <Grid container spacing={2}>
-        {paginatedAdvertisements.map((ad) => (
-          <Grid item key={ad.id} xs={12} sm={6} md={4}>
-            <AdvertisementCard ad={ad} />
-          </Grid>
-        ))}
+        {advertisements
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((ad) => (
+            <Grid item key={ad.id} xs={12} sm={6} md={4}>
+              <AdvertisementCard ad={ad} />
+            </Grid>
+          ))}
       </Grid>
 
       {/* Пагинация */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <TablePagination
           component="div"
-          count={filteredAdvertisements.length} // Количество отфильтрованных объявлений
+          count={totalAdvertisements}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

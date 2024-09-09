@@ -7,7 +7,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Button,
   Box,
 } from '@mui/material';
 import OrderCard from '../components/OrderCard';
@@ -19,13 +18,20 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState(''); // Фильтрация по статусу
-  const [sortBy, setSortBy] = useState(''); // Сортировка по сумме заказа
+  const [sortBy, setSortBy] = useState('asc'); // Сортировка по возрастанию (по умолчанию)
 
   // Загрузка заказов с сервера
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const data = await fetchOrders(filter, sortBy); // Загружаем заказы с фильтром и сортировкой
+      let data = await fetchOrders(filter, sortBy); // Загружаем заказы с фильтром и сортировкой
+
+      // Приведение данных к единому формату
+      data = data.map((order) => ({
+        ...order,
+        totalAmount: order.totalAmount || order.total, // Если нет totalAmount, используем total
+      }));
+
       setOrders(data);
     } catch (err) {
       setError('Ошибка при загрузке заказов');
@@ -66,9 +72,9 @@ const Orders = () => {
       <FormControl fullWidth sx={{ marginBottom: 2 }}>
         <InputLabel>Сортировка по сумме</InputLabel>
         <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <MenuItem value="">Нет сортировки</MenuItem>
           <MenuItem value="asc">По возрастанию</MenuItem>
-          <MenuItem value="desc">По убыванию</MenuItem>
+          <MenuItem value="desc">По убыванию</MenuItem>{' '}
+          {/* Сортировка по убыванию */}
         </Select>
       </FormControl>
 

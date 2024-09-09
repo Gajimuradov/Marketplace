@@ -7,13 +7,12 @@ import Navbar from './components/Navbar'; // Убедитесь, что Navbar �
 const App = () => {
   return (
     <Router>
-      <Navbar /> {/* Убедитесь, что Navbar находится выше Routes */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<AllAdvertisements />} />
         <Route path="/advertisements" element={<AllAdvertisements />} />
         <Route path="/advertisements/:id" element={<AdvertisementDetails />} />
         <Route path="/orders" element={<Orders />} />{' '}
-        {/* Маршрут для заказов */}
       </Routes>
     </Router>
   );

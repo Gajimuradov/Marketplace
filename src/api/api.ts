@@ -4,38 +4,34 @@ import { Advertisment } from '../types';
 // Функция для получения всех объявлений
 
 export const fetchAdvertisements = async (
-  limit = 10,
-  start = 0,
-  searchQuery = '',
-  filter = ''
+  filterCategory = 'all',
+  sortBy = 'asc'
 ) => {
-  // Логируем запрос для проверки
-  console.log(
-    'Запрос к API:',
-    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`
-  );
+  let url = `http://localhost:3000/advertisements`;
 
-  const searchParam = searchQuery ? `&name_like=${searchQuery}` : '';
+  const queryParams = [];
 
-  const response = await fetch(
-    `http://localhost:3000/advertisements?_start=${start}&_limit=${limit}${searchParam}&_sort=${filter}`
-  );
+  // Фильтрация по категории
+  if (filterCategory !== 'all') {
+    queryParams.push(`_sort=${filterCategory}`);
+  }
+
+  // Добавляем сортировку
+  if (sortBy) {
+    queryParams.push(`_order=${sortBy}`);
+  }
+
+  // Объединяем параметры в строку
+  if (queryParams.length > 0) {
+    url += `?${queryParams.join('&')}`;
+  }
+
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error('Ошибка при загрузке объявлений');
   }
 
-  const advertisements = await response.json();
-
-  console.log('Полученные объявления:', advertisements); // Логируем результаты
-
-  // Получаем общее количество объявлений, без учета пагинации
-  const countResponse = await fetch('http://localhost:3000/advertisements');
-  const allAdvertisements = await countResponse.json();
-
-  return {
-    advertisements,
-    totalCount: allAdvertisements.length, // Возвращаем общее количество объявлений
-  };
+  return await response.json();
 };
 
 // Функция для получения конкретного объявления по ID
@@ -98,7 +94,7 @@ export const deleteAdvertisement = async (id: string) => {
 };
 
 // Функция для получения всех заказов с фильтрацией и сортировкой
-export const fetchOrders = async (status = '', sortBy = '') => {
+export const fetchOrders = async (status = '', sortBy = 'asc') => {
   let url = `http://localhost:3000/orders`;
 
   // Добавляем фильтрацию по статусу
@@ -127,4 +123,23 @@ export const fetchAllAdvertisements = async () => {
 
   const advertisements = await response.json();
   return advertisements; // Возвращаем все объявления
+};
+
+export const updateOrderStatus = async (
+  orderId: string,
+  updatedOrder: Order
+) => {
+  const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedOrder),
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при обновлении заказа');
+  }
+
+  return await response.json();
 };
