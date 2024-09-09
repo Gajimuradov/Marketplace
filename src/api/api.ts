@@ -2,12 +2,23 @@
 import { Advertisment } from '../types';
 
 // Функция для получения всех объявлений
+
 export const fetchAdvertisements = async (limit = 10, start = 0, searchQuery = '', filter = '') => {
   const response = await fetch(`http://localhost:3000/advertisements?_start=${start}&_limit=${limit}&name_like=${searchQuery}&_sort=${filter}`);
   if (!response.ok) {
     throw new Error('Ошибка при загрузке объявлений');
   }
-  return await response.json();
+
+  const advertisements = await response.json();
+
+  // Получаем общее количество объявлений, без учета пагинации
+  const countResponse = await fetch('http://localhost:3000/advertisements');
+  const allAdvertisements = await countResponse.json();
+
+  return {
+    advertisements,
+    totalCount: allAdvertisements.length, // Возвращаем общее количество объявлений
+  };
 };
 
 // Функция для получения конкретного объявления по ID

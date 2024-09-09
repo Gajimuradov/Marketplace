@@ -12,32 +12,32 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import TablePagination from '@mui/material/TablePagination';
 import AdvertisementCard from '../components/AdvertisementCard';
-import AddAdvertisementModal from '../components/AddAdvertisementModal'; // Импортируем модальное окно
+import AddAdvertisementModal from '../components/AddAdvertisementModal';
 import { fetchAdvertisements } from '../api/api';
 import { Advertisment } from '../types';
 
 const AllAdvertisements = () => {
-  // Состояния и функции компонента
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
-  const [totalAdvertisements, setTotalAdvertisements] = useState(0);
-  const [openAddModal, setOpenAddModal] = useState(false); // Состояние для модального окна
+  const [totalAdvertisements, setTotalAdvertisements] = useState(0); // Количество всех объявлений
+  const [openAddModal, setOpenAddModal] = useState(false);
 
+  // Функция для загрузки объявлений и общего количества объявлений
   const loadAdvertisements = async () => {
     setLoading(true);
     try {
-      const data = await fetchAdvertisements(
+      const { advertisements, totalCount } = await fetchAdvertisements(
         rowsPerPage,
         page * rowsPerPage,
         searchQuery,
         ''
       );
-      setAdvertisements(data);
-      setTotalAdvertisements(data.length);
+      setAdvertisements(advertisements);
+      setTotalAdvertisements(totalCount); // Устанавливаем общее количество объявлений
     } catch (err) {
       setError('Ошибка при загрузке объявлений');
     } finally {
@@ -57,7 +57,7 @@ const AllAdvertisements = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPage(0); // Сброс на первую страницу при изменении количества строк
   };
 
   const handleOpenAddModal = () => {
@@ -128,7 +128,7 @@ const AllAdvertisements = () => {
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
         <TablePagination
           component="div"
-          count={totalAdvertisements}
+          count={totalAdvertisements} // Общее количество объявлений для корректной пагинации
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
