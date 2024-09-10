@@ -78,10 +78,11 @@ const AdvertisementDetails = () => {
 
   // Ограничение на 100 символов для краткого описания
   const maxDescriptionLength = 100;
+  const description = advert.description || ''; // Проверяем наличие описания
   const truncatedDescription =
-    advert.description.length > maxDescriptionLength
-      ? advert.description.slice(0, maxDescriptionLength) + '...'
-      : advert.description;
+    description.length > maxDescriptionLength
+      ? description.slice(0, maxDescriptionLength) + '...'
+      : description;
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -104,11 +105,11 @@ const AdvertisementDetails = () => {
           <Typography
             variant="body1"
             gutterBottom
-            sx={{ wordBreak: 'break-word' }} // Описание переносится на новую строку
+            sx={{ wordBreak: 'break-word' }}
           >
-            {expanded ? advert.description : truncatedDescription}
+            {expanded ? description : truncatedDescription}
           </Typography>
-          {advert.description.length > maxDescriptionLength && (
+          {description.length > maxDescriptionLength && (
             <Button onClick={() => setExpanded(!expanded)}>
               {expanded ? 'Скрыть' : 'Читать полностью'}
             </Button>

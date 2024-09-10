@@ -1,5 +1,7 @@
-import { Card, CardContent, Typography, CardMedia } from '@mui/material';
+import { Card, CardContent, Typography, CardMedia, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Advertisment } from '../types';
 
 interface AdvertisementCardProps {
@@ -32,12 +34,21 @@ const AdvertisementCard = ({ ad }: AdvertisementCardProps) => {
         <Typography variant="body2" color="text.secondary">
           Цена: {ad.price} ₽
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Просмотры: {ad.views}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Лайки: {ad.likes}
-        </Typography>
+
+        {/* Добавляем блок с иконками просмотров и лайков */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+          {/* Иконка просмотров */}
+          <VisibilityIcon sx={{ mr: 0.5 }} />
+          <Typography variant="body2" color="text.secondary" sx={{ mr: 2 }}>
+            {ad.views}
+          </Typography>
+
+          {/* Иконка лайков */}
+          <FavoriteIcon sx={{ mr: 0.5 }} />
+          <Typography variant="body2" color="text.secondary">
+            {ad.likes}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );
