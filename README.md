@@ -1,7 +1,6 @@
 # Marketplace
 
-npm install
+Для запуска приложения
 
-npm run server
-
-npm run dev
+1. npm i
+2. npm start
