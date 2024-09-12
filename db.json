@@ -94,6 +94,20 @@
       "views": 80,
       "likes": 12,
       "imageUrl": "https://example.com/gloves.jpg"
+    },
+    {
+      "id": "6f43",
+      "name": "Бипки",
+      "description": "Что это?",
+      "price": 1,
+      "imageUrl": ""
+    },
+    {
+      "id": "1b65",
+      "name": "PS 5 pro",
+      "description": "Как обычный но с полосками и дороже",
+      "price": 0,
+      "imageUrl": ""
     }
   ],
   "orders": [

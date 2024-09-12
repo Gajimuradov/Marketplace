@@ -27,7 +27,7 @@ const AdvertisementDetails = () => {
         const fetchedAdvert = await fetchAdvertisement(id!); // Получаем объявление по ID
         setAdvert(fetchedAdvert);
         setEditedAdvert(fetchedAdvert); // Инициализируем редактируемое объявление
-      } catch (error) {
+      } catch {
         setError('Ошибка при загрузке объявления');
       } finally {
         setLoading(false);
@@ -49,7 +49,7 @@ const AdvertisementDetails = () => {
       setAdvert(editedAdvert as Advertisment); // Обновляем состояние
       setIsEditing(false); // Выходим из режима редактирования
       navigate('/advertisements'); // Переход на страницу всех объявлений после сохранения
-    } catch (error) {
+    } catch {
       setError('Ошибка при обновлении объявления');
     } finally {
       setLoading(false);

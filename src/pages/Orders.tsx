@@ -13,30 +13,35 @@ import {
 } from '@mui/material';
 import OrderCard from '../components/OrderCard';
 import { fetchOrders } from '../api/api';
-import { Order, OrderStatus } from '../types';
+import { Order } from '../types';
+import PaginationComponent from '../components/PaginationComponent'; // Импортируем компонент пагинации
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState(''); // Фильтрация по статусу
-  const [sortBy, setSortBy] = useState('none'); // По умолчанию "Без сортировки"
+  const [sortBy, setSortBy] = useState('none');
   const [searchQuery, setSearchQuery] = useState(''); // Поисковый запрос
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   // Загрузка заказов с сервера
   const loadOrders = async () => {
     setLoading(true);
     try {
       let data = await fetchOrders(filter, sortBy, searchQuery);
-
       // Приведение данных к единому формату
       data = data.map((order) => ({
         ...order,
-        totalAmount: order.totalAmount || order.total,
+        totalAmount: order.total,
       }));
-
-      setOrders(data);
-    } catch (err) {
+      setOrders(
+        data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      ); // Добавляем пагинацию
+      setTotalOrders(data.length); // Общее количество заказов для пагинации
+    } catch {
       setError('Ошибка при загрузке заказов');
     } finally {
       setLoading(false);
@@ -44,11 +49,22 @@ const Orders = () => {
   };
 
   useEffect(() => {
-    loadOrders(); // Загружаем заказы при изменении фильтров, сортировки и поиска
-  }, [filter, sortBy, searchQuery]);
+    loadOrders(); // Загружаем заказы при изменении фильтров, сортировки, поиска, пагинации
+  }, [filter, sortBy, searchQuery, page, rowsPerPage]);
 
   const handleSearch = () => {
     loadOrders(); // Обновляем список заказов при поиске
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   if (loading) {
@@ -118,6 +134,15 @@ const Orders = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Пагинация */}
+      <PaginationComponent
+        total={totalOrders}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Box>
   );
 };

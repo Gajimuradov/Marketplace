@@ -11,7 +11,6 @@ import {
   TextField,
   Button,
   Modal,
-  TablePagination,
   IconButton,
 } from '@mui/material';
 import { fetchAdvertisements, createAdvertisement } from '../api/api'; // Добавим функцию создания объявления
@@ -19,6 +18,7 @@ import AdvertisementCard from '../components/AdvertisementCard';
 import { Advertisment } from '../types';
 import SortIcon from '@mui/icons-material/Sort';
 import SearchIcon from '@mui/icons-material/Search';
+import PaginationComponent from '../components/PaginationComponent';
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
@@ -45,7 +45,7 @@ const AllAdvertisements = () => {
       const data = await fetchAdvertisements(filterCategory, sortOrder);
       setAdvertisements(data);
       setTotalAdvertisements(data.length); // Обновляем количество объявлений для пагинации
-    } catch (err) {
+    } catch {
       setError('Ошибка при загрузке объявлений');
     } finally {
       setLoading(false);
@@ -184,14 +184,12 @@ const AllAdvertisements = () => {
 
       {/* Пагинация */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        <TablePagination
-          component="div"
-          count={totalAdvertisements}
+        <PaginationComponent
+          total={totalAdvertisements}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Объявлений на странице"
         />
       </Box>
 
