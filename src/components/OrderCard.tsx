@@ -1,44 +1,68 @@
 import { Card, CardContent, Typography, Button, Box } from '@mui/material';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Order } from '../types';
-import { updateOrderStatus } from '../api/api'; // Предполагаем, что существует функция для обновления статуса заказа
+import { Order, OrderStatus } from '../types';
+import { updateOrderStatus } from '../api/api';
 
 interface OrderCardProps {
   order: Order;
-  onUpdateOrder: (updatedOrder: Order) => void; // Функция для обновления заказа
+  onUpdateOrder: (updatedOrder: Order) => void;
 }
 
 const OrderCard = ({ order, onUpdateOrder }: OrderCardProps) => {
-  const [showItems, setShowItems] = useState(false); // Для показа товаров
+  const [showItems, setShowItems] = useState(false);
   const navigate = useNavigate();
 
-  // Функция для перехода на страницу объявления
   const handleItemClick = (itemId: string) => {
-    navigate(`/advertisements/${itemId}`); // Переход на страницу объявления по его ID
+    navigate(`/advertisements/${itemId}`);
   };
 
-  // Рассчитываем общую сумму заказа
-  const calculateTotalAmount = () => {
-    return order.items.reduce(
-      (total, item) => total + item.price * item.count,
-      0
+  const totalAmount = useMemo(() => {
+    return (
+      order.items?.reduce(
+        (total, item) => total + item.price * item.count,
+        0
+      ) || 0
     );
-  };
+  }, [order.items]);
 
-  // Функция для завершения заказа
+  // Функция для изменения статуса на "Завершён" (Archived)
   const handleCompleteOrder = async () => {
-    const updatedOrder = {
-      ...order,
-      status: 'completed',
-      finishedAt: new Date().toISOString(), // Устанавливаем дату завершения
-    };
-
     try {
-      await updateOrderStatus(order.id, updatedOrder); // Обновляем заказ через API
-      onUpdateOrder(updatedOrder); // Обновляем заказ в состоянии
+      await updateOrderStatus(order.id, {
+        ...order,
+        status: OrderStatus.Archived, // Статус "Архив" как завершение заказа
+        finishedAt: new Date().toISOString(),
+      });
+      onUpdateOrder({
+        ...order,
+        status: OrderStatus.Archived,
+        finishedAt: new Date().toISOString(),
+      }); // Обновляем заказ в состоянии
     } catch (error) {
       console.error('Ошибка при завершении заказа:', error);
+    }
+  };
+
+  // Определяем статус заказа в текстовом виде
+  const getStatusText = (status: number) => {
+    switch (status) {
+      case OrderStatus.Created:
+        return 'Создан';
+      case OrderStatus.Paid:
+        return 'Оплачен';
+      case OrderStatus.Transport:
+        return 'В пути';
+      case OrderStatus.DeliveredToThePoint:
+        return 'Доставлен в пункт';
+      case OrderStatus.Received:
+        return 'Получен';
+      case OrderStatus.Archived:
+        return 'Завершён';
+      case OrderStatus.Refund:
+        return 'Возврат';
+      default:
+        return 'Неизвестный статус';
     }
   };
 
@@ -46,8 +70,8 @@ const OrderCard = ({ order, onUpdateOrder }: OrderCardProps) => {
     <Card sx={{ marginBottom: 2 }}>
       <CardContent>
         <Typography variant="h6">Заказ №{order.id}</Typography>
-        <Typography>Товары: {order.items.length}</Typography>
-        <Typography>Сумма: {calculateTotalAmount()} ₽</Typography>
+        <Typography>Товары: {order.items?.length || 0}</Typography>
+        <Typography>Сумма: {totalAmount} ₽</Typography>
         <Typography>
           Дата создания: {new Date(order.createdAt).toLocaleDateString()}
         </Typography>
@@ -56,20 +80,19 @@ const OrderCard = ({ order, onUpdateOrder }: OrderCardProps) => {
             Дата закрытия: {new Date(order.finishedAt).toLocaleDateString()}
           </Typography>
         )}
-        <Typography>
-          Статус: {order.status === 'completed' ? 'Завершён' : 'В ожидании'}
-        </Typography>
+        <Typography>Статус: {getStatusText(order.status)}</Typography>
 
-        {/* Кнопка для завершения заказа, если статус "В ожидании" */}
-        {order.status === 'pending' && (
-          <Button
-            variant="contained"
-            sx={{ mt: 1 }}
-            onClick={handleCompleteOrder}
-          >
-            Завершить заказ
-          </Button>
-        )}
+        {/* Кнопка для завершения заказа только если он не завершен или в возврате */}
+        {order.status !== OrderStatus.Archived &&
+          order.status !== OrderStatus.Refund && (
+            <Button
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleCompleteOrder}
+            >
+              Завершить заказ
+            </Button>
+          )}
 
         <Button
           variant="contained"
@@ -79,16 +102,14 @@ const OrderCard = ({ order, onUpdateOrder }: OrderCardProps) => {
           {showItems ? 'Скрыть товары' : 'Показать товары'}
         </Button>
 
-        {/* Список товаров */}
         {showItems && (
           <Box sx={{ marginTop: 2 }}>
-            {order.items.map((item) => (
+            {order.items?.map((item) => (
               <Box
                 key={item.id}
                 sx={{ cursor: 'pointer', marginBottom: 1 }}
                 onClick={() => handleItemClick(item.id)}
               >
-                {/* Ограничиваем длину названия товара до 20 символов */}
                 <Typography sx={{ color: 'blue' }} variant="body1">
                   {item.name.length > 20
                     ? `${item.name.slice(0, 20)}...`

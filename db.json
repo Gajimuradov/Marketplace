@@ -94,69 +94,14 @@
       "views": 80,
       "likes": 12,
       "imageUrl": "https://example.com/gloves.jpg"
-    },
-    {
-      "id": "ff24",
-      "name": "asdsd",
-      "price": 1221,
-      "imageUrl": "https://sc04.alicdn.com/kf/Haffdf66022a042d3a4ac3f25a82adbccq.jpg",
-      "createdAt": "2024-09-09T10:02:53.768Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "0e3a",
-      "name": "sad",
-      "price": 21,
-      "imageUrl": "https://sc04.alicdn.com/kf/Haffdf66022a042d3a4ac3f25a82adbccq.jpg",
-      "createdAt": "2024-09-09T10:03:22.077Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "8d34",
-      "name": "стол старый",
-      "price": 21,
-      "description": "Да, вот такой вот стул",
-      "imageUrl": "https://images.ctfassets.net/0idwgenf7ije/25ssR4JRs7de6cRKmDd6AB/b6d30d1fd533c20fc32e3e6eeeff9efc/Gemini_Orchid_in_5_minutes-Image_2.png",
-      "createdAt": "2024-09-09T13:20:31.428Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "3361",
-      "name": "Бипки",
-      "price": 1,
-      "description": "йц",
-      "imageUrl": "",
-      "createdAt": "2024-09-09T14:25:17.298Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "4d50",
-      "name": "короткое",
-      "price": 2,
-      "description": "ОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинноОченьдлинно",
-      "imageUrl": "",
-      "createdAt": "2024-09-09T16:07:45.580Z",
-      "views": 0,
-      "likes": 0
-    },
-    {
-      "id": "8ec3",
-      "name": "тест",
-      "description": "оно есть",
-      "price": 200,
-      "imageUrl": ""
     }
   ],
   "orders": [
     {
       "id": "1",
-      "status": 0,
+      "status": 5,
       "createdAt": "2024-08-12T20:20:55.351Z",
-      "finishedAt": "",
+      "finishedAt": "2024-09-12T11:22:44.994Z",
       "total": 314000,
       "deliveryWay": "mail",
       "items": [
@@ -181,13 +126,14 @@
           "imageUrl": "https://example.com/box.jpg",
           "count": 2
         }
-      ]
+      ],
+      "totalAmount": 314000
     },
     {
       "id": "2",
-      "status": 4,
+      "status": 5,
       "createdAt": "2024-08-12T20:20:55.351Z",
-      "finishedAt": "2024-08-12T20:25:55.351Z",
+      "finishedAt": "2024-09-12T11:15:15.950Z",
       "total": 33000,
       "deliveryWay": "sdek",
       "items": [
@@ -216,15 +162,15 @@
     },
     {
       "id": "3",
-      "status": "completed",
+      "status": 1,
       "createdAt": "2024-08-13T15:00:00.000Z",
-      "finishedAt": "2024-09-09T19:59:10.432Z",
-      "totalAmount": 60000,
+      "finishedAt": "",
+      "total": 60000,
       "deliveryWay": "mail",
       "items": [
         {
           "id": "1",
-          "name": "Стул старинный",
+          "name": "Стул Новый",
           "price": 2000,
           "createdAt": "2022-08-12T20:16:55.351Z",
           "views": 20,
@@ -236,10 +182,10 @@
     },
     {
       "id": "4",
-      "status": "completed",
+      "status": 2,
       "createdAt": "2024-08-14T10:00:00.000Z",
-      "finishedAt": "2024-08-14T12:00:00.000Z",
-      "totalAmount": 100000,
+      "finishedAt": "",
+      "total": 100000,
       "deliveryWay": "sdek",
       "items": [
         {
@@ -251,6 +197,176 @@
           "likes": 2,
           "imageUrl": "https://example.com/carpet.jpg",
           "count": 20
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "status": 3,
+      "createdAt": "2024-08-14T10:00:00.000Z",
+      "finishedAt": "",
+      "total": 120000,
+      "deliveryWay": "pickup",
+      "items": [
+        {
+          "id": "8",
+          "name": "Книга",
+          "price": 500,
+          "createdAt": "2024-09-08T01:24:37.645Z",
+          "views": 50,
+          "likes": 10,
+          "imageUrl": "https://avatars.mds.yandex.net/i?id=a17fde7c3bd1d88eb97d397cf09a95eb_l-7863184-images-thumbs&n=13",
+          "count": 240
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "status": 4,
+      "createdAt": "2024-08-15T12:00:00.000Z",
+      "finishedAt": "",
+      "total": 8000,
+      "deliveryWay": "mail",
+      "items": [
+        {
+          "id": "9",
+          "name": "Шапка",
+          "price": 1000,
+          "createdAt": "2024-09-08T01:24:37.645Z",
+          "views": 100,
+          "likes": 15,
+          "imageUrl": "https://avatars.mds.yandex.net/get-mpic/12390131/2a0000018e65ddaa1e41d771007073a3ef7e/orig",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "status": 6,
+      "createdAt": "2024-08-15T13:00:00.000Z",
+      "finishedAt": "",
+      "total": 16000,
+      "deliveryWay": "sdek",
+      "items": [
+        {
+          "id": "10",
+          "name": "Перчатки",
+          "price": 800,
+          "createdAt": "2024-09-08T01:24:37.645Z",
+          "views": 80,
+          "likes": 12,
+          "imageUrl": "https://example.com/gloves.jpg",
+          "count": 20
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "status": 5,
+      "createdAt": "2024-08-15T15:00:00.000Z",
+      "finishedAt": "2024-09-10T15:30:00.000Z",
+      "total": 120000,
+      "deliveryWay": "pickup",
+      "items": [
+        {
+          "id": "6",
+          "name": "Угловой диван",
+          "price": 999,
+          "createdAt": "2024-08-12T14:16:55.351Z",
+          "views": 20000,
+          "likes": 1,
+          "imageUrl": "https://avatars.mds.yandex.net/i?id=2ab7d95b33290f9733a2f65bd7d283d1_l-5258573-images-thumbs&n=13",
+          "count": 120
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "status": 0,
+      "createdAt": "2024-09-01T10:00:00.000Z",
+      "finishedAt": "",
+      "total": 45000,
+      "deliveryWay": "mail",
+      "items": [
+        {
+          "id": "1",
+          "name": "Стул Новый",
+          "price": 2000,
+          "createdAt": "2022-08-12T20:16:55.351Z",
+          "views": 20,
+          "likes": 2,
+          "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Armchair_%28fauteuil_à_la_reine%29_MET_DP106642.jpg/1173px-Armchair_%28fauteuil_à_la_reine%29_MET_DP106642.jpg",
+          "count": 10
+        },
+        {
+          "id": "2",
+          "name": "Плащ невидимка",
+          "price": 10000000,
+          "createdAt": "2024-08-12T20:16:55.351Z",
+          "views": 900,
+          "likes": 19,
+          "imageUrl": "https://avatars.dzeninfra.ru/get-zen_doc/133957/pub_5b51c6564f736c00a9569d0c_5b51cea37166ec00a92ed395/scale_1200",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "status": 1,
+      "createdAt": "2024-09-02T11:30:00.000Z",
+      "finishedAt": "",
+      "total": 90000,
+      "deliveryWay": "sdek",
+      "items": [
+        {
+          "id": "3",
+          "name": "Ковер",
+          "price": 5000,
+          "createdAt": "2024-07-12T20:16:55.351Z",
+          "views": 2000000,
+          "likes": 2,
+          "imageUrl": "https://a.d-cd.net/e45546s-1920.jpg",
+          "count": 18
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "status": 2,
+      "createdAt": "2024-09-03T14:45:00.000Z",
+      "finishedAt": "",
+      "total": 72000,
+      "deliveryWay": "pickup",
+      "items": [
+        {
+          "id": "4",
+          "name": "Носки",
+          "price": 6000,
+          "createdAt": "2024-06-12T20:16:55.351Z",
+          "views": 0,
+          "likes": 0,
+          "imageUrl": "https://media.baamboozle.com/uploads/images/1882220/c7f19a90-dd49-42cd-96ff-84ce8bf3d3a1.webp",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "status": 3,
+      "createdAt": "2024-09-04T09:15:00.000Z",
+      "finishedAt": "",
+      "total": 150000,
+      "deliveryWay": "mail",
+      "items": [
+        {
+          "id": "6",
+          "name": "Угловой диван",
+          "price": 999,
+          "createdAt": "2024-08-12T14:16:55.351Z",
+          "views": 20000,
+          "likes": 1,
+          "imageUrl": "https://avatars.mds.yandex.net/i?id=2ab7d95b33290f9733a2f65bd7d283d1_l-5258573-images-thumbs&n=13",
+          "count": 150
         }
       ]
     }

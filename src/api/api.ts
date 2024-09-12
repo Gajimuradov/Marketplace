@@ -1,150 +1,107 @@
-import { Advertisment, Order } from '../types';
+import { Advertisment, Order, OrderStatus } from '../types';
 
-// Функция для получения всех объявлений
-
+// Получение всех объявлений с фильтрацией и сортировкой
 export const fetchAdvertisements = async (
   filterCategory = 'all',
   sortBy = 'asc'
 ) => {
-  let url = `http://localhost:3000/advertisements`;
+  const params = new URLSearchParams();
+  if (filterCategory !== 'all') params.append('_sort', filterCategory);
+  if (sortBy) params.append('_order', sortBy);
 
-  const queryParams = [];
-
-  // Фильтрация по категории
-  if (filterCategory !== 'all') {
-    queryParams.push(`_sort=${filterCategory}`);
-  }
-
-  // Добавляем сортировку
-  if (sortBy) {
-    queryParams.push(`_order=${sortBy}`);
-  }
-
-  // Объединяем параметры в строку
-  if (queryParams.length > 0) {
-    url += `?${queryParams.join('&')}`;
-  }
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Ошибка при загрузке объявлений');
-  }
-
-  return await response.json();
+  const response = await fetch(
+    `http://localhost:3000/advertisements${params.toString() ? `?${params}` : ''}`
+  );
+  if (!response.ok) throw new Error('Ошибка при загрузке объявлений');
+  return response.json();
 };
 
-// Функция для получения конкретного объявления по ID
+// Получение конкретного объявления по ID
 export const fetchAdvertisement = async (id: string) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`);
-  if (!response.ok) {
-    throw new Error('Ошибка при загрузке объявления');
-  }
-  return await response.json();
+  if (!response.ok) throw new Error('Ошибка при загрузке объявления');
+  return response.json();
 };
 
-// Функция для создания нового объявления
+// Создание нового объявления
 export const createAdvertisement = async (advert: Partial<Advertisment>) => {
   const response = await fetch('http://localhost:3000/advertisements', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(advert),
   });
-
-  if (!response.ok) {
-    throw new Error('Ошибка при создании объявления');
-  }
-
-  return await response.json();
+  if (!response.ok) throw new Error('Ошибка при создании объявления');
+  return response.json();
 };
 
-// Функция для обновления объявления
+// Обновление объявления по ID
 export const updateAdvertisement = async (
   id: string,
   advert: Partial<Advertisment>
 ) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(advert),
   });
-
-  if (!response.ok) {
-    throw new Error('Ошибка при обновлении объявления');
-  }
-
-  return await response.json();
+  if (!response.ok) throw new Error('Ошибка при обновлении объявления');
+  return response.json();
 };
 
-// Функция для удаления объявления
+// Удаление объявления по ID
 export const deleteAdvertisement = async (id: string) => {
   const response = await fetch(`http://localhost:3000/advertisements/${id}`, {
     method: 'DELETE',
   });
-
-  if (!response.ok) {
-    throw new Error('Ошибка при удалении объявления');
-  }
-
-  return await response.json();
+  if (!response.ok) throw new Error('Ошибка при удалении объявления');
+  return response.json();
 };
 
-// Функция для получения всех заказов с фильтрацией и сортировкой
-export const fetchOrders = async (status = '', sortBy = 'asc', searchQuery = '') => {
+// Получение всех заказов с фильтрацией по статусу и сортировкой
+export const fetchOrders = async (
+  statusFilter: string = '',
+  sortBy: string = 'none',
+  searchQuery: string = ''
+) => {
   let url = `http://localhost:3000/orders`;
+  const queryParams = new URLSearchParams();
 
-  // Добавляем фильтрацию по статусу
-  if (status) {
-    url += `?status=${status}`;
+  // Фильтрация по статусу
+  if (statusFilter) {
+    const statusValue = OrderStatus[statusFilter as keyof typeof OrderStatus];
+    if (statusValue !== undefined) {
+      queryParams.append('status', statusValue.toString());
+    }
   }
 
   // Добавляем сортировку по сумме заказа
-  if (sortBy) {
-    const separator = status ? '&' : '?'; // Определяем, нужно ли добавить "&" или "?"
-    url += `${separator}_sort=totalAmount&_order=${sortBy}`;
+  if (sortBy !== 'none') {
+    queryParams.append('_sort', 'total');
+    queryParams.append('_order', sortBy); // "asc" или "desc"
   }
 
-  // Добавляем поиск по названию (или другому параметру, если необходимо)
+  // Поиск по заказам
   if (searchQuery) {
-    const separator = status || sortBy ? '&' : '?'; // Определяем, нужно ли добавить "&" или "?"
-    url += `${separator}name_like=${searchQuery}`;
+    queryParams.append('q', searchQuery); // Пример поиска
   }
 
-  const response = await fetch(url);
+  const response = await fetch(`${url}?${queryParams.toString()}`);
   if (!response.ok) {
     throw new Error('Ошибка при загрузке заказов');
   }
   return await response.json();
 };
 
-export const fetchAllAdvertisements = async () => {
-  const response = await fetch(`http://localhost:3000/advertisements`);
-  if (!response.ok) {
-    throw new Error('Ошибка при загрузке объявлений');
-  }
-
-  const advertisements = await response.json();
-  return advertisements; // Возвращаем все объявления
-};
-
+// Обновление статуса заказа
 export const updateOrderStatus = async (
   orderId: string,
   updatedOrder: Order
 ) => {
   const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updatedOrder),
   });
-
-  if (!response.ok) {
-    throw new Error('Ошибка при обновлении заказа');
-  }
-
-  return await response.json();
+  if (!response.ok) throw new Error('Ошибка при обновлении заказа');
+  return response.json();
 };

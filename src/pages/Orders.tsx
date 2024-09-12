@@ -12,27 +12,27 @@ import {
   Box,
 } from '@mui/material';
 import OrderCard from '../components/OrderCard';
-import { fetchOrders } from '../api/api'; // Функция для получения всех заказов
-import { Order } from '../types';
+import { fetchOrders } from '../api/api';
+import { Order, OrderStatus } from '../types';
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState(''); // Фильтрация по статусу
-  const [sortBy, setSortBy] = useState('asc'); // Сортировка по возрастанию (по умолчанию)
+  const [sortBy, setSortBy] = useState('none'); // По умолчанию "Без сортировки"
   const [searchQuery, setSearchQuery] = useState(''); // Поисковый запрос
 
   // Загрузка заказов с сервера
   const loadOrders = async () => {
     setLoading(true);
     try {
-      let data = await fetchOrders(filter, sortBy, searchQuery); // Загружаем заказы с фильтром, сортировкой и поиском
+      let data = await fetchOrders(filter, sortBy, searchQuery);
 
       // Приведение данных к единому формату
       data = data.map((order) => ({
         ...order,
-        totalAmount: order.totalAmount || order.total, // Если нет totalAmount, используем total
+        totalAmount: order.totalAmount || order.total,
       }));
 
       setOrders(data);
@@ -70,8 +70,13 @@ const Orders = () => {
         <InputLabel>Фильтрация по статусу</InputLabel>
         <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <MenuItem value="">Все</MenuItem>
-          <MenuItem value="pending">В ожидании</MenuItem>
-          <MenuItem value="completed">Завершённые</MenuItem>
+          <MenuItem value="Created">Создан</MenuItem>
+          <MenuItem value="Paid">Оплачен</MenuItem>
+          <MenuItem value="Transport">В пути</MenuItem>
+          <MenuItem value="DeliveredToThePoint">Доставлен в пункт</MenuItem>
+          <MenuItem value="Received">Получен</MenuItem>
+          <MenuItem value="Archived">Завершён</MenuItem>
+          <MenuItem value="Refund">Возврат</MenuItem>
         </Select>
       </FormControl>
 
@@ -79,6 +84,7 @@ const Orders = () => {
       <FormControl fullWidth sx={{ marginBottom: 2 }}>
         <InputLabel>Сортировка по сумме</InputLabel>
         <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <MenuItem value="none">Без сортировки</MenuItem>
           <MenuItem value="asc">По возрастанию</MenuItem>
           <MenuItem value="desc">По убыванию</MenuItem>
         </Select>
@@ -92,7 +98,7 @@ const Orders = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSearch(); // Выполняем поиск при нажатии Enter
+            if (e.key === 'Enter') handleSearch();
           }}
         />
         <Button
@@ -108,7 +114,7 @@ const Orders = () => {
       <Grid container spacing={2}>
         {orders.map((order) => (
           <Grid item key={order.id} xs={12} sm={6} md={4}>
-            <OrderCard order={order} />
+            <OrderCard order={order} onUpdateOrder={loadOrders} />
           </Grid>
         ))}
       </Grid>
