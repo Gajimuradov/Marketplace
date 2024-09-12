@@ -43,8 +43,11 @@ const AllAdvertisements = () => {
     setLoading(true);
     try {
       const data = await fetchAdvertisements(filterCategory, sortOrder);
-      setAdvertisements(data);
-      setTotalAdvertisements(data.length);
+      const filteredData = data.filter((ad) =>
+        ad.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setAdvertisements(filteredData);
+      setTotalAdvertisements(filteredData.length);
     } catch {
       setError('Ошибка при загрузке объявлений');
     } finally {

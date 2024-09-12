@@ -10,11 +10,13 @@ import {
   TextField,
   Button,
   Box,
+  IconButton,
 } from '@mui/material';
 import OrderCard from '../components/OrderCard';
 import { fetchOrders } from '../api/api';
 import { Order } from '../types';
 import PaginationComponent from '../components/PaginationComponent'; // Импортируем компонент пагинации
+import SearchIcon from '@mui/icons-material/Search'; // Импортируем иконку поиска
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -81,33 +83,34 @@ const Orders = () => {
         Все заказы
       </Typography>
 
-      {/* Фильтрация по статусу */}
-      <FormControl fullWidth sx={{ marginBottom: 2 }}>
-        <InputLabel>Фильтрация по статусу</InputLabel>
-        <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <MenuItem value="">Все</MenuItem>
-          <MenuItem value="Created">Создан</MenuItem>
-          <MenuItem value="Paid">Оплачен</MenuItem>
-          <MenuItem value="Transport">В пути</MenuItem>
-          <MenuItem value="DeliveredToThePoint">Доставлен в пункт</MenuItem>
-          <MenuItem value="Received">Получен</MenuItem>
-          <MenuItem value="Archived">Завершён</MenuItem>
-          <MenuItem value="Refund">Возврат</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Сортировка по сумме */}
-      <FormControl fullWidth sx={{ marginBottom: 2 }}>
-        <InputLabel>Сортировка по сумме</InputLabel>
-        <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <MenuItem value="none">Без сортировки</MenuItem>
-          <MenuItem value="asc">По возрастанию</MenuItem>
-          <MenuItem value="desc">По убыванию</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Поле для поиска */}
+      {/* Фильтрация, сортировка и поиск */}
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        {/* Фильтрация по статусу слева */}
+        <FormControl sx={{ marginRight: 2, minWidth: 200 }}>
+          <InputLabel>Фильтрация по статусу</InputLabel>
+          <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <MenuItem value="">Все</MenuItem>
+            <MenuItem value="Created">Создан</MenuItem>
+            <MenuItem value="Paid">Оплачен</MenuItem>
+            <MenuItem value="Transport">В пути</MenuItem>
+            <MenuItem value="DeliveredToThePoint">Доставлен в пункт</MenuItem>
+            <MenuItem value="Received">Получен</MenuItem>
+            <MenuItem value="Archived">Завершён</MenuItem>
+            <MenuItem value="Refund">Возврат</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Сортировка по сумме */}
+        <FormControl sx={{ marginRight: 2, minWidth: 200 }}>
+          <InputLabel>Сортировка по сумме</InputLabel>
+          <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <MenuItem value="none">Без сортировки</MenuItem>
+            <MenuItem value="asc">По возрастанию</MenuItem>
+            <MenuItem value="desc">По убыванию</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Поле поиска аналогичное AllAdvertisements */}
         <TextField
           label="Поиск заказов"
           fullWidth
@@ -116,10 +119,15 @@ const Orders = () => {
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
+          InputProps={{
+            startAdornment: <SearchIcon />,
+          }}
         />
+
+        {/* Кнопка поиска */}
         <Button
           variant="contained"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, height: 56, minWidth: 120 }}
           onClick={handleSearch}
         >
           Искать
