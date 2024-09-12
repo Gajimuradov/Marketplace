@@ -7,6 +7,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  TextField,
+  Button,
   Box,
 } from '@mui/material';
 import OrderCard from '../components/OrderCard';
@@ -19,12 +21,13 @@ const Orders = () => {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState(''); // Фильтрация по статусу
   const [sortBy, setSortBy] = useState('asc'); // Сортировка по возрастанию (по умолчанию)
+  const [searchQuery, setSearchQuery] = useState(''); // Поисковый запрос
 
   // Загрузка заказов с сервера
   const loadOrders = async () => {
     setLoading(true);
     try {
-      let data = await fetchOrders(filter, sortBy); // Загружаем заказы с фильтром и сортировкой
+      let data = await fetchOrders(filter, sortBy, searchQuery); // Загружаем заказы с фильтром, сортировкой и поиском
 
       // Приведение данных к единому формату
       data = data.map((order) => ({
@@ -41,8 +44,12 @@ const Orders = () => {
   };
 
   useEffect(() => {
-    loadOrders(); // Загружаем заказы при изменении фильтров
-  }, [filter, sortBy]);
+    loadOrders(); // Загружаем заказы при изменении фильтров, сортировки и поиска
+  }, [filter, sortBy, searchQuery]);
+
+  const handleSearch = () => {
+    loadOrders(); // Обновляем список заказов при поиске
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -73,10 +80,29 @@ const Orders = () => {
         <InputLabel>Сортировка по сумме</InputLabel>
         <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
           <MenuItem value="asc">По возрастанию</MenuItem>
-          <MenuItem value="desc">По убыванию</MenuItem>{' '}
-          {/* Сортировка по убыванию */}
+          <MenuItem value="desc">По убыванию</MenuItem>
         </Select>
       </FormControl>
+
+      {/* Поле для поиска */}
+      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+        <TextField
+          label="Поиск заказов"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch(); // Выполняем поиск при нажатии Enter
+          }}
+        />
+        <Button
+          variant="contained"
+          sx={{ marginLeft: 2 }}
+          onClick={handleSearch}
+        >
+          Искать
+        </Button>
+      </Box>
 
       {/* Отображение всех заказов */}
       <Grid container spacing={2}>

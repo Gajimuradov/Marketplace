@@ -142,6 +142,13 @@
       "createdAt": "2024-09-09T16:07:45.580Z",
       "views": 0,
       "likes": 0
+    },
+    {
+      "id": "8ec3",
+      "name": "тест",
+      "description": "оно есть",
+      "price": 200,
+      "imageUrl": ""
     }
   ],
   "orders": [

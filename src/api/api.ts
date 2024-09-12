@@ -1,5 +1,4 @@
-// api.ts
-import { Advertisment } from '../types';
+import { Advertisment, Order } from '../types';
 
 // Функция для получения всех объявлений
 
@@ -94,7 +93,7 @@ export const deleteAdvertisement = async (id: string) => {
 };
 
 // Функция для получения всех заказов с фильтрацией и сортировкой
-export const fetchOrders = async (status = '', sortBy = 'asc') => {
+export const fetchOrders = async (status = '', sortBy = 'asc', searchQuery = '') => {
   let url = `http://localhost:3000/orders`;
 
   // Добавляем фильтрацию по статусу
@@ -106,6 +105,12 @@ export const fetchOrders = async (status = '', sortBy = 'asc') => {
   if (sortBy) {
     const separator = status ? '&' : '?'; // Определяем, нужно ли добавить "&" или "?"
     url += `${separator}_sort=totalAmount&_order=${sortBy}`;
+  }
+
+  // Добавляем поиск по названию (или другому параметру, если необходимо)
+  if (searchQuery) {
+    const separator = status || sortBy ? '&' : '?'; // Определяем, нужно ли добавить "&" или "?"
+    url += `${separator}name_like=${searchQuery}`;
   }
 
   const response = await fetch(url);

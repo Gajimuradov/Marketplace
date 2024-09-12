@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "server": "json-server --watch db.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -16,6 +17,7 @@
     "@fontsource/roboto": "^5.0.14",
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
+    "concurrently": "^9.0.1",
     "json-server": "^1.0.0-beta.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
