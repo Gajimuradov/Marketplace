@@ -10,15 +10,15 @@ import {
   Box,
   TextField,
   Button,
-  Modal,
   IconButton,
 } from '@mui/material';
-import { fetchAdvertisements, createAdvertisement } from '../api/api'; // Добавим функцию создания объявления
+import { fetchAdvertisements, createAdvertisement } from '../api/api';
 import AdvertisementCard from '../components/AdvertisementCard';
 import { Advertisment } from '../types';
 import SortIcon from '@mui/icons-material/Sort';
 import SearchIcon from '@mui/icons-material/Search';
 import PaginationComponent from '../components/PaginationComponent';
+import CreateAdvertisementModal from '../components/CreateAdvertisementModal'; // Импортируем модальное окно
 
 const AllAdvertisements = () => {
   const [advertisements, setAdvertisements] = useState<Advertisment[]>([]);
@@ -30,7 +30,7 @@ const AllAdvertisements = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalAdvertisements, setTotalAdvertisements] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Для отображения модального окна
+  const [isModalOpen, setIsModalOpen] = useState(false); // Управление модальным окном
   const [newAdvert, setNewAdvert] = useState<Partial<Advertisment>>({
     name: '',
     description: '',
@@ -44,7 +44,7 @@ const AllAdvertisements = () => {
     try {
       const data = await fetchAdvertisements(filterCategory, sortOrder);
       setAdvertisements(data);
-      setTotalAdvertisements(data.length); // Обновляем количество объявлений для пагинации
+      setTotalAdvertisements(data.length);
     } catch {
       setError('Ошибка при загрузке объявлений');
     } finally {
@@ -76,7 +76,7 @@ const AllAdvertisements = () => {
   // Сохранение нового объявления
   const handleCreateAdvert = async () => {
     try {
-      await createAdvertisement(newAdvert); // Отправка нового объявления на сервер
+      await createAdvertisement(newAdvert);
       loadAdvertisements(); // Обновление списка объявлений
       handleCloseModal(); // Закрытие модального окна после создания
     } catch (error) {
@@ -128,12 +128,10 @@ const AllAdvertisements = () => {
 
       {/* Сортировка, иконка сортировки, и поле поиска */}
       <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-        {/* Иконка сортировки */}
         <IconButton onClick={handleSortToggle} sx={{ marginRight: 2 }}>
           <SortIcon />
         </IconButton>
 
-        {/* Сортировка по параметрам */}
         <FormControl sx={{ marginRight: 2, minWidth: 200 }}>
           <InputLabel>Сортировка</InputLabel>
           <Select
@@ -147,7 +145,6 @@ const AllAdvertisements = () => {
           </Select>
         </FormControl>
 
-        {/* Поле поиска */}
         <TextField
           label="Поиск объявления..."
           fullWidth
@@ -161,10 +158,9 @@ const AllAdvertisements = () => {
           }}
         />
 
-        {/* Кнопка для поиска */}
         <Button
           variant="contained"
-          sx={{ marginLeft: 2, height: 56, minWidth: 120 }} // Делаем кнопку шире
+          sx={{ marginLeft: 2, height: 56, minWidth: 120 }}
           onClick={handleSearch}
         >
           Искать
@@ -194,61 +190,13 @@ const AllAdvertisements = () => {
       </Box>
 
       {/* Модальное окно для создания нового объявления */}
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Box
-          sx={{
-            padding: 4,
-            backgroundColor: 'white',
-            margin: 'auto',
-            width: '400px',
-            mt: 8,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Новое объявление
-          </Typography>
-          <TextField
-            label="Название"
-            fullWidth
-            value={newAdvert.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Цена"
-            fullWidth
-            type="number"
-            value={newAdvert.price}
-            onChange={(e) =>
-              handleInputChange('price', parseFloat(e.target.value))
-            }
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Описание"
-            fullWidth
-            multiline
-            rows={4}
-            value={newAdvert.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Ссылка на изображение"
-            fullWidth
-            value={newAdvert.imageUrl}
-            onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-            sx={{ marginBottom: 2 }}
-          />
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={handleCreateAdvert}
-          >
-            Создать
-          </Button>
-        </Box>
-      </Modal>
+      <CreateAdvertisementModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleCreateAdvert}
+        newAdvert={newAdvert}
+        onInputChange={handleInputChange}
+      />
     </Box>
   );
 };
